@@ -1,0 +1,25 @@
+- name: Actualizar servidores Ubuntu
+  hosts: servidores
+  become: yes
+  tasks:
+    - name: Actualizar la lista de paquetes
+      apt:
+        update_cache: yes
+
+    - name: Actualizar todos los paquetes del sistema
+      apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
+
+    - name: Actualizar la distribución completa
+      apt:
+        name: "*"
+        state: latest
+
+    - name: Reiniciar el servidor si es necesario
+      reboot:
+        msg: "Reinicio después de la actualización"
+        pre_reboot_delay: 10
+        post_reboot_delay: 30
+      when: ansible_facts['os_family'] == "Debian"
